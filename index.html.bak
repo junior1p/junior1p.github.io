@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>BioTender</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="BioTender · AI × 生物研究资讯与长期观察" />
+
+  <style>
+    :root {
+      --bg: #050710;
+      --fg: #f0f4f8;
+      --muted: #a8b2c1;
+      --dim: #7d8994;
+      --accent: #60a5fa;
+      --accent-glow: #3b82f6;
+      --bio-accent: #34d399;
+      --card: rgba(255,255,255,0.025);
+      --card-border: rgba(255,255,255,0.06);
+      --line: rgba(255,255,255,0.08);
+      --glow-intensity: 0.6;
+    }
+
+    * { 
+      box-sizing: border-box;
+    }
+
+    /* 增强背景：科技感 + 生物氛围 */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        /* 生物荧光粒子效果 */
+        radial-gradient(circle at 20% 80%, rgba(52, 211, 153, calc(0.08 * var(--glow-intensity))), transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(96, 165, 250, calc(0.06 * var(--glow-intensity))), transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(139, 92, 246, calc(0.04 * var(--glow-intensity))), transparent 50%),
+        
+        /* 精细网格纹理 */
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 40px,
+          rgba(255,255,255,0.015) 40px,
+          rgba(255,255,255,0.015) 41px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 40px,
+          rgba(255,255,255,0.012) 40px,
+          rgba(255,255,255,0.012) 41px
+        ),
+        
+        /* AI计算空间深度 */
+        radial-gradient(ellipse at center, rgba(59, 130, 246, 0.03) 0%, transparent 70%),
+        
+        /* 基底渐变 */
+        linear-gradient(180deg, #050710 0%, #0a0f1a 100%);
+      
+      background-attachment: fixed;
+      color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, 
+                   "PingFang SC", "Microsoft YaHei", sans-serif;
+      
+      /* 添加细微噪点纹理 */
+      position: relative;
+    }
+
+    /* 噪点层 */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        repeating-conic-gradient(
+          from 0deg at 50% 50%,
+          transparent 0deg,
+          rgba(255,255,255,0.01) 5deg,
+          transparent 10deg
+        );
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* 增强容器 */
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 120px 24px 80px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* 主标题：发光效果 */
+    h1 {
+      font-size: 52px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      margin: 0 0 20px;
+      background: linear-gradient(135deg, var(--fg) 0%, var(--muted) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      
+      /* 添加文字光晕 */
+      text-shadow: 
+        0 0 30px rgba(96, 165, 250, 0.15),
+        0 0 60px rgba(96, 165, 250, 0.08);
+      
+      animation: titleGlow 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes titleGlow {
+      0% { filter: brightness(1); }
+      100% { filter: brightness(1.05); }
+    }
+
+    /* 副标题：玻璃效果 */
+    .tagline {
+      font-size: 20px;
+      line-height: 1.75;
+      color: var(--muted);
+      max-width: 620px;
+      margin-bottom: 64px;
+      
+      background: rgba(255,255,255,0.02);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 16px 20px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tagline::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.05), transparent);
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    /* 内容区域 */
+    .section {
+      margin-bottom: 56px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 18px;
+      
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(96, 165, 250, 0.08);
+      border-radius: 20px;
+      border: 1px solid rgba(96, 165, 250, 0.15);
+      
+      position: relative;
+    }
+
+    .section-title::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.3), transparent);
+    }
+
+    /* 列表项：增强卡片效果 */
+    .item {
+      font-size: 18px;
+      line-height: 1.8;
+      margin-bottom: 12px;
+      padding: 12px 16px;
+      
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      
+      position: relative;
+      overflow: hidden;
+      
+      transition: all 0.3s ease;
+    }
+
+    .item::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--accent), var(--bio-accent));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .item:hover::before {
+      opacity: 0.8;
+    }
+
+    .item:hover {
+      background: rgba(255,255,255,0.035);
+      border-color: rgba(96, 165, 250, 0.2);
+      transform: translateX(4px);
+    }
+
+    /* 链接：增强效果 */
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      position: relative;
+      
+      font-weight: 500;
+    }
+
+    a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    a:hover {
+      color: var(--accent-glow);
+      text-shadow: 0 0 8px rgba(96, 165, 250, 0.4);
+    }
+
+    a:hover::after {
+      opacity: 1;
+      height: 2px;
+      box-shadow: 0 0 10px rgba(96, 165, 250, 0.6);
+    }
+
+    /* 入口按钮：高级玻璃拟态 */
+    .entry {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 28px;
+      border-radius: 16px;
+      
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      position: relative;
+      overflow: hidden;
+    }
+
+    .entry::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.1), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .entry:hover::before {
+      left: 100%;
+    }
+
+    .entry:hover {
+      transform: translateY(-3px) scale(1.02);
+      border-color: rgba(96, 165, 250, 0.5);
+      background: rgba(255,255,255,0.08);
+      box-shadow: 
+        0 12px 24px rgba(96, 165, 250, 0.15),
+        0 0 40px rgba(96, 165, 250, 0.08),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    .entry:active {
+      transform: translateY(-1px) scale(1.01);
+    }
+
+    .entry span {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--accent);
+      text-shadow: 0 0 12px rgba(96, 165, 250, 0.3);
+    }
+
+    /* 页脚 */
+    .footer {
+      margin-top: 120px;
+      font-size: 13px;
+      color: var(--dim);
+      
+      padding: 16px 0;
+      border-top: 1px solid var(--line);
+      
+      position: relative;
+    }
+
+    .footer::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .wrap {
+        padding: 80px 20px 60px;
+      }
+      
+      h1 {
+        font-size: 42px;
+        letter-spacing: -0.5px;
+      }
+      
+      .tagline {
+        font-size: 18px;
+        padding: 12px 16px;
+      }
+      
+      .item {
+        font-size: 16px;
+        padding: 10px 14px;
+      }
+      
+      .entry {
+        padding: 14px 24px;
+        gap: 10px;
+      }
+      
+      .entry span {
+        font-size: 15px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .wrap {
+        padding: 60px 16px 40px;
+      }
+      
+      h1 {
+        font-size: 36px;
+        margin-bottom: 12px;
+      }
+      
+      .tagline {
+        font-size: 16px;
+        margin-bottom: 48px;
+      }
+      
+      .section {
+        margin-bottom: 40px;
+      }
+      
+      .section-title {
+        font-size: 12px;
+        margin-bottom: 12px;
+        padding: 3px 10px;
+      }
+      
+      .item {
+        font-size: 15px;
+        line-height: 1.6;
+        margin-bottom: 8px;
+        padding: 8px 12px;
+      }
+      
+      .entry {
+        padding: 12px 20px;
+      }
+      
+      .footer {
+        margin-top: 80px;
+        font-size: 12px;
+      }
+    }
+
+    /* 深色模式优化 */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --glow-intensity: 0.8;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <h1>BioTender</h1>
+
+    <div class="tagline">
+      AI × 生物研究的长期观察、整理与注解。
+    </div>
+
+    <div class="section">
+      <div class="section-title">Focus</div>
+      <div class="item">· AI 在蛋白质结构预测与设计中的真实进展</div>
+      <div class="item">· 生物基础模型（BFM）与多模态方法</div>
+      <div class="item">· 计算方法如何真正进入生物研究工作流</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Entry</div>
+      <div class="item">
+        <a class="entry" href="https://junior1p.github.io/BioTender/">
+          <span>进入 BioTender 资讯主页</span> →
+        </a>
+      </div>
+    </div>
+
+    <div class="footer">
+      Curated by junior1p · GitHub Pages
+    </div>
+  </div>
+</body>
+</html>
